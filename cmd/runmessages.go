@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	log.SetLevel(log.ErrorLevel)
+	log.SetLevel(log.WarnLevel)
 	fmt.Println("starting")
 	mpi.Start(true)
 	o := mpi.NewCommunicator(nil)
@@ -37,5 +37,6 @@ func main() {
 	fmt.Printf("%d: terminating\n", myRank)
 	myNode.Terminate()
 	fmt.Printf("%d: exiting\n", myRank)
+	o.Barrier()
 	mpi.Stop()
 }
