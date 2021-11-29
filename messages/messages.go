@@ -54,7 +54,7 @@ func recv(node *Node) {
 	defer close(node.Inbox)
 	defer log.Warnf("    %d: closing down recv goroutine", node.Source)
 	for {
-		recvbytes, status := node.comm.RecvBytes(mpi.MPI_ANY_SOURCE, mpi.MPI_ANY_TAG)
+		recvbytes, status := node.comm.MrecvBytes(mpi.MPI_ANY_SOURCE, mpi.MPI_ANY_TAG)
 		log.Warnf("    %d: recv: received bytes %s from inbox", node.Source, string(recvbytes))
 		tag := status.GetTag()
 		if tag == TERMINATE_TAG {
