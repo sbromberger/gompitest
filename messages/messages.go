@@ -2,6 +2,7 @@ package messages
 
 import (
 	"fmt"
+	"runtime"
 
 	log "github.com/sirupsen/logrus"
 
@@ -35,6 +36,7 @@ func NewNode(source int, comm *mpi.Communicator, bufsize int) *Node {
 }
 
 func send(node *Node) {
+	runtime.LockOSThread()
 	log.Warnf("    %d: starting up send goroutine", node.Source)
 	defer log.Warnf("    %d: closing down send goroutine", node.Source)
 	for {
@@ -49,6 +51,7 @@ func send(node *Node) {
 }
 
 func recv(node *Node) {
+	runtime.LockOSThread()
 	log.Warnf("    %d: starting up recv goroutine", node.Source)
 	// defer close(node.Inbox)
 	// defer close(node.Outbox)
