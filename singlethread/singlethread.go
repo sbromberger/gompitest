@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 
 	mpi "github.com/sbromberger/gompi"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
+	runtime.LockOSThread()
 	log.SetLevel(log.WarnLevel)
 	fmt.Println("starting")
 	mpi.Start(true)
