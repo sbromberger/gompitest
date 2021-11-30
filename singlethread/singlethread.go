@@ -8,8 +8,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func main() {
+func init() {
 	runtime.LockOSThread()
+}
+func main() {
 	log.SetLevel(log.WarnLevel)
 	fmt.Println("starting")
 	mpi.Start(true)
