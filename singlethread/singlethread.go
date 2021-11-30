@@ -28,8 +28,11 @@ func main() {
 		o.SendBytes(bytes, 1, 1)
 	} else {
 		fmt.Printf("1: mrecv\n")
-		msg, _ := o.MrecvBytes(0, 1)
-		fmt.Printf("1:    received %s\n", msg)
+		pstat, msg := o.Mprobe(0, 1)
+
+		fmt.Printf("finished Mprobe: pstat = %v, msg = %v\n", pstat, msg)
+		// msg, _ := o.MrecvBytes(0, 1)
+		// fmt.Printf("1:    received %s\n", msg)
 	}
 	o.Barrier()
 	mpi.Stop()
