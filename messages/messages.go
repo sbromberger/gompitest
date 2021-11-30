@@ -70,6 +70,7 @@ func recv(node *Node) {
 }
 
 func (node *Node) Launch() {
+	runtime.LockOSThread()
 	go send(node)
 	go recv(node)
 }
