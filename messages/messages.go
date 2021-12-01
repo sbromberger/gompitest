@@ -36,14 +36,14 @@ func NewNode(source int, comm *mpi.Communicator, bufsize int) *Node {
 
 func send(node *Node) {
 	runtime.LockOSThread()
-	log.Warnf("    %d: starting up send goroutine", node.Source)
-	defer log.Warnf("    %d: closing down send goroutine", node.Source)
+	log.Debugf("    %d: starting up send goroutine", node.Source)
+	defer log.Debugf("    %d: closing down send goroutine", node.Source)
 	for {
 		msg := <-node.Outbox
-		log.Warnf("    %d: send: sending msg %v from outbox", node.Source, msg)
+		log.Debugf("    %d: send: sending msg %v from outbox", node.Source, msg)
 		node.comm.SendBytes(msg.Bytes, msg.Remote, msg.Tag)
 		if msg.Tag == node.comm.MaxTag {
-			log.Warnf("    %d send: terminating", node.Source)
+			log.Debugf("    %d send: terminating", node.Source)
 			return
 		}
 	}
@@ -51,18 +51,18 @@ func send(node *Node) {
 
 func recv(node *Node) {
 	runtime.LockOSThread()
-	log.Warnf("    %d: starting up recv goroutine", node.Source)
+	log.Debugf("    %d: starting up recv goroutine", node.Source)
 	// defer close(node.Inbox)
 	// defer close(node.Outbox)
-	defer log.Warnf("    %d: closing down recv goroutine", node.Source)
+	defer log.Debugf("    %d: closing down recv goroutine", node.Source)
 	for {
 		recvbytes, status := node.comm.MrecvBytes(mpi.MPI_ANY_SOURCE, mpi.MPI_ANY_TAG)
-		log.Warnf("    %d: recv: received bytes %s from inbox", node.Source, string(recvbytes))
+		log.Debugf("    %d: recv: received bytes %s from inbox", node.Source, string(recvbytes))
 		tag := status.GetTag()
 		msg := Msg{Bytes: recvbytes, Remote: status.GetSource(), Tag: tag}
 		node.Inbox <- msg
 		if tag == node.comm.MaxTag {
-			log.Warnf("    %d recv: terminating", node.Source)
+			log.Debugf("    %d recv: terminating", node.Source)
 			return
 		}
 	}
@@ -74,11 +74,11 @@ func (node *Node) Launch() {
 	go recv(node)
 }
 func (node *Node) Terminate() {
-	log.Warnf("    %d: Terminate", node.Source)
+	log.Debugf("    %d: Terminate", node.Source)
 	// node.comm.SendBytes([]byte{0}, node.Source, node.comm.MaxTag)
 	node.Outbox <- Msg{Bytes: []byte{0}, Remote: node.Source, Tag: node.comm.MaxTag}
 	<-node.Inbox
 	close(node.Inbox)
 	close(node.Outbox)
-	log.Warnf("    %d: Terminate: all channels closed", node.Source)
+	log.Debugf("    %d: Terminate: all channels closed", node.Source)
 }
