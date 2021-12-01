@@ -27,7 +27,7 @@ func main() {
 		_ = <-node.Inbox
 		t2 := time.Now()
 
-		fmt.Printf("sent in %v, round trip %v", t1.Sub(t0), t2.Sub(t0))
+		fmt.Printf("sent in %v, round trip %v\n", t1.Sub(t0), t2.Sub(t0))
 	} else {
 		rmsg := <-node.Inbox
 		rmsg.Remote = 0
