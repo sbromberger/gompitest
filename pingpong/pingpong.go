@@ -19,8 +19,10 @@ func main() {
 	node := messages.NewNode(myRank, &o, 1)
 	node.Launch()
 	if myRank == 0 {
-		fmt.Println("rank 0")
 		msg := messages.Msg{Remote: 1, Tag: 0, Bytes: []byte(str)}
+		node.Outbox <- msg
+		_ = <-node.Inbox
+		fmt.Println("rank 0")
 		t0 := time.Now()
 		node.Outbox <- msg
 		t1 := time.Now()
@@ -31,6 +33,8 @@ func main() {
 	} else {
 		rmsg := <-node.Inbox
 		rmsg.Remote = 0
+		node.Outbox <- rmsg
+		_ = <-node.Inbox
 		node.Outbox <- rmsg
 	}
 

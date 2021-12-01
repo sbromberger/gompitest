@@ -16,6 +16,8 @@ func main() {
 	myRank := o.Rank()
 
 	if myRank == 0 {
+		o.SendString(str, 1, 0)
+		_, _ = o.RecvString(1, 0)
 		fmt.Println("rank 0")
 		t0 := time.Now()
 		o.SendString(str, 1, 0)
@@ -26,6 +28,8 @@ func main() {
 		fmt.Printf("sent in %v, round trip %v\n", t1.Sub(t0), t2.Sub(t0))
 	} else {
 		s, _ := o.RecvString(0, 0)
+		o.SendString(s, 0, 0)
+		_, _ = o.RecvString(0, 0)
 		o.SendString(s, 0, 0)
 	}
 
