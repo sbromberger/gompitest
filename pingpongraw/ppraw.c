@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <mpi.h>
-#include <time.h>
+#include <sys/time.h>
 int main(int argc, char** argv){
     int node;
     int t;
@@ -9,7 +9,7 @@ int main(int argc, char** argv){
     MPI_Comm_rank(MPI_COMM_WORLD, &node);
     char *data = "hello there";
     int l = 11;
-    clock_t start, finish;
+    struct timeval  tv1, tv2;
 
     MPI_Message msg;
     MPI_Status status;
@@ -30,17 +30,18 @@ int main(int argc, char** argv){
             MPI_Mrecv(buffer, count, MPI_BYTE, &msg, MPI_STATUS_IGNORE);
 	    printf("node 0 sending\n");
 	    fflush(stdout);
-	    start = clock();
+	    gettimeofday(&tv1, NULL);
 	    MPI_Send(data, l, MPI_BYTE, 1, 0, MPI_COMM_WORLD);
 	    MPI_Mprobe(1, 0, MPI_COMM_WORLD, &msg, &status);
 	    MPI_Get_count(&status, MPI_BYTE, &count);
 	    char *buffer2 = malloc(count);
 
             MPI_Mrecv(buffer2, count, MPI_BYTE, &msg, MPI_STATUS_IGNORE);
-	    finish = clock();
+	    gettimeofday(&tv2, NULL);
 	    double cpu_time_used;
-	    cpu_time_used = ((double) (finish - start)) / CLOCKS_PER_SEC * 1000000;
-	    printf("Elapsed: %f us\n", cpu_time_used);
+	    printf ("Total time = %f us\n",
+         (double) (tv2.tv_usec - tv1.tv_usec) +
+         (double) (tv2.tv_sec - tv1.tv_sec)   * 1000000);
 	    fflush(stdout);
     } else {
 	    printf("node 1 warmup mprobing\n");
