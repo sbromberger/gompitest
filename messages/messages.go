@@ -10,7 +10,6 @@ import (
 )
 
 const DEFAULT_TAG = 0
-const TERMINATE_TAG = 99
 
 type Msg struct {
 	Remote int
@@ -43,7 +42,7 @@ func send(node *Node) {
 		msg := <-node.Outbox
 		log.Warnf("    %d: send: sending msg %v from outbox", node.Source, msg)
 		node.comm.SendBytes(msg.Bytes, msg.Remote, msg.Tag)
-		if msg.Tag == TERMINATE_TAG {
+		if msg.Tag == node.comm.MaxTag {
 			log.Warnf("    %d send: terminating", node.Source)
 			return
 		}
@@ -62,7 +61,7 @@ func recv(node *Node) {
 		tag := status.GetTag()
 		msg := Msg{Bytes: recvbytes, Remote: status.GetSource(), Tag: tag}
 		node.Inbox <- msg
-		if tag == TERMINATE_TAG {
+		if tag == node.comm.MaxTag {
 			log.Warnf("    %d recv: terminating", node.Source)
 			return
 		}
@@ -76,8 +75,8 @@ func (node *Node) Launch() {
 }
 func (node *Node) Terminate() {
 	log.Warnf("    %d: Terminate", node.Source)
-	// node.comm.SendBytes([]byte{0}, node.Source, TERMINATE_TAG)
-	node.Outbox <- Msg{Bytes: []byte{0}, Remote: node.Source, Tag: TERMINATE_TAG}
+	// node.comm.SendBytes([]byte{0}, node.Source, node.comm.MaxTag)
+	node.Outbox <- Msg{Bytes: []byte{0}, Remote: node.Source, Tag: node.comm.MaxTag}
 	<-node.Inbox
 	close(node.Inbox)
 	close(node.Outbox)
