@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	mpi "github.com/sbromberger/gompi"
 	"github.com/sbromberger/gompitest/messages"
@@ -23,13 +22,13 @@ func main() {
 		node.Outbox <- msg
 		_ = <-node.Inbox
 		fmt.Println("rank 0")
-		t0 := time.Now()
+		t0 := mpi.WorldTime()
 		node.Outbox <- msg
-		t1 := time.Now()
+		t1 := mpi.WorldTime()
 		_ = <-node.Inbox
-		t2 := time.Now()
+		t2 := mpi.WorldTime()
 
-		fmt.Printf("sent in %v, round trip %v\n", t1.Sub(t0), t2.Sub(t0))
+		fmt.Printf("sent in %v µs, round trip %v µs\n", (t1-t0) *100000, (t2-t0) * 100000)
 	} else {
 		rmsg := <-node.Inbox
 		rmsg.Remote = 0
