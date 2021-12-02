@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	mpi "github.com/sbromberger/gompi"
 	messages "github.com/sbromberger/gompitest/messages2"
@@ -22,13 +21,13 @@ func main() {
 		node.Send(msg)
 		node.Recv()
 		fmt.Println("rank 0")
-		t0 := time.Now()
+		t0 := mpi.WorldTime()
 		node.Send(msg)
-		t1 := time.Now()
+		t1 := mpi.WorldTime()
 		node.Recv()
-		t2 := time.Now()
+		t2 := mpi.WorldTime()
 
-		fmt.Printf("sent in %v, round trip %v\n", t1.Sub(t0), t2.Sub(t0))
+		fmt.Printf("sent in %v µs, round trip %v µs\n", (t1-t0)*1e6, (t2-t0)*1e6)
 	} else {
 		rmsg := node.Recv()
 		rmsg.Remote = 0
