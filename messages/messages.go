@@ -14,11 +14,11 @@ const DEFAULT_TAG = 0
 type Msg struct {
 	Remote int
 	Tag    int
-	Bytes  []byte
+	Bytes  *([]byte)
 }
 
 func (m Msg) String() string {
-	return fmt.Sprintf("Message: Remote %d, Tag %d, \"%s\"", m.Remote, m.Tag, string(m.Bytes))
+	return fmt.Sprintf("Message: Remote %d, Tag %d, \"%s\"", m.Remote, m.Tag, string(*m.Bytes))
 }
 
 type Node struct {
@@ -41,7 +41,7 @@ func send(node *Node) {
 	for {
 		msg := <-node.Outbox
 		log.Debugf("    %d: send: sending msg %v from outbox", node.Source, msg)
-		node.comm.SendBytes(msg.Bytes, msg.Remote, msg.Tag)
+		node.comm.SendBytes(*msg.Bytes, msg.Remote, msg.Tag)
 		if msg.Tag == node.comm.MaxTag {
 			log.Debugf("    %d send: terminating", node.Source)
 			return
@@ -59,7 +59,7 @@ func recv(node *Node) {
 		recvbytes, status := node.comm.MrecvBytes(mpi.MPI_ANY_SOURCE, mpi.MPI_ANY_TAG)
 		log.Debugf("    %d: recv: received bytes %s from inbox", node.Source, string(recvbytes))
 		tag := status.GetTag()
-		msg := &Msg{Bytes: recvbytes, Remote: status.GetSource(), Tag: tag}
+		msg := &Msg{Bytes: &recvbytes, Remote: status.GetSource(), Tag: tag}
 		node.Inbox <- msg
 		if tag == node.comm.MaxTag {
 			log.Debugf("    %d recv: terminating", node.Source)
@@ -76,7 +76,7 @@ func (node *Node) Launch() {
 func (node *Node) Terminate() {
 	log.Debugf("    %d: Terminate", node.Source)
 	// node.comm.SendBytes([]byte{0}, node.Source, node.comm.MaxTag)
-	node.Outbox <- &Msg{Bytes: []byte{0}, Remote: node.Source, Tag: node.comm.MaxTag}
+	node.Outbox <- &Msg{Bytes: &([]byte{0}), Remote: node.Source, Tag: node.comm.MaxTag}
 	<-node.Inbox
 	close(node.Inbox)
 	close(node.Outbox)

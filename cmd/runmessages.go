@@ -28,7 +28,7 @@ func main() {
 	dest := (myRank + 1) % nprocs
 	mymsg := []byte(fmt.Sprintf("hello from rank %d to rank %d!", myRank, dest))
 	fmt.Printf("  %d: sending message %s to %d\n", myRank, mymsg, dest)
-	myNode.Outbox <- messages.Msg{Bytes: mymsg, Remote: dest, Tag: myRank}
+	myNode.Outbox <- &messages.Msg{Bytes: &mymsg, Remote: dest, Tag: myRank}
 
 	fmt.Printf("%d: receiving\n", myRank)
 	m := <-myNode.Inbox

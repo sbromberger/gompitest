@@ -15,7 +15,7 @@ func main() {
 		panic("Invalid number of iterations")
 	}
 
-	str := "Hello this is a message"
+	str := []byte("Hello this is a message")
 
 	mpi.Start(true)
 	fmt.Println("started")
@@ -23,12 +23,12 @@ func main() {
 	myRank := o.Rank()
 
 	node := messages.NewNode(myRank, &o, 1)
+	msg := &messages.Msg{Remote: 1, Tag: 0, Bytes: &str}
 	node.Launch()
 	t0 := mpi.WorldTime()
 	for i := 0; i < n; i++ {
 
 		if myRank == 0 {
-			msg := &messages.Msg{Remote: 1, Tag: 0, Bytes: []byte(str)}
 			node.Outbox <- msg
 			<-node.Inbox
 			node.Outbox <- msg
