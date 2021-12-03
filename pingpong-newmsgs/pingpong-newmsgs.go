@@ -43,7 +43,7 @@ func main() {
 	t1 := mpi.WorldTime()
 
 	if myRank == 0 {
-		fmt.Printf("elapsed %v s, average %v µs\n", (t1 - t0), (t1-t0)/float64(n)*1e6)
+		fmt.Printf("elapsed %v s, average %v µs\n", (t1 - t0), (t1-t0)/float64(n)*1000000)
 	}
 	mpi.Stop()
 }

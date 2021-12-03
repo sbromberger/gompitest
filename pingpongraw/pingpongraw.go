@@ -38,6 +38,6 @@ func main() {
 	}
 	t1 := mpi.WorldTime()
 
-	fmt.Printf("elapsed %v s, average %v µs\n", t1-t0, (t1-t0)/float64(n)*100000)
+	fmt.Printf("elapsed %v s, average %v µs\n", t1-t0, (t1-t0)/float64(n)*1000000)
 	mpi.Stop()
 }
