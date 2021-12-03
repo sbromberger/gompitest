@@ -31,7 +31,7 @@ func NewNode(source int, comm *mpi.Communicator, bufsize int) *Node {
 	return &node
 }
 
-func (node *Node) Send(msg Msg) {
+func (node *Node) Send(msg *Msg) {
 	node.comm.SendBytes(msg.Bytes, msg.Remote, msg.Tag)
 }
 

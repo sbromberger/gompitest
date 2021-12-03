@@ -27,17 +27,17 @@ func main() {
 	for i := 0; i < n; i++ {
 		if myRank == 0 {
 			msg := messages.Msg{Remote: 1, Tag: 0, Bytes: []byte(str)}
-			node.Send(msg)
+			node.Send(&msg)
 			node.Recv()
-			node.Send(msg)
+			node.Send(&msg)
 			node.Recv()
 
 		} else {
 			rmsg := node.Recv()
 			rmsg.Remote = 0
-			node.Send(rmsg)
+			node.Send(&rmsg)
 			node.Recv()
-			node.Send(rmsg)
+			node.Send(&rmsg)
 		}
 	}
 	t1 := mpi.WorldTime()
