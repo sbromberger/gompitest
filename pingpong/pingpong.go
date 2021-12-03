@@ -28,7 +28,7 @@ func main() {
 	for i := 0; i < n; i++ {
 
 		if myRank == 0 {
-			msg := messages.Msg{Remote: 1, Tag: 0, Bytes: []byte(str)}
+			msg := &messages.Msg{Remote: 1, Tag: 0, Bytes: []byte(str)}
 			node.Outbox <- msg
 			<-node.Inbox
 			node.Outbox <- msg
