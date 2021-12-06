@@ -9,4 +9,4 @@ require (
 
 require golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 
-replace github.com/sbromberger/gompi => /home/seth/dev/go/gompi
+replace github.com/sbromberger/gompi => /g/g17/seth/dev/go/me/gompi
