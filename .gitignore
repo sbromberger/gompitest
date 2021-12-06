@@ -1,3 +1,4 @@
+go.mod
 run.txt
 cmd/cmd
 cmd2/cmd2
