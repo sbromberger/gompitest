@@ -22,7 +22,7 @@ func main() {
 	o := mpi.NewCommunicator(nil)
 	myRank := o.Rank()
 
-	node := messages.NewNode(myRank, &o, 1)
+	node := messages.NewNode(myRank, o, 1)
 	t0 := mpi.WorldTime()
 	for i := 0; i < n; i++ {
 		if myRank == 0 {

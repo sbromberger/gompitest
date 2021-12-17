@@ -1,3 +1,4 @@
+// this package implements goroutine-safe nonblocking receives.
 package messages
 
 import (
@@ -38,7 +39,7 @@ func (node *Node) Send(msg *Msg) {
 func (node *Node) Recv() Msg {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
-	recvbytes, status := node.comm.MrecvBytes(mpi.MPI_ANY_SOURCE, mpi.MPI_ANY_TAG)
+	recvbytes, status := node.comm.MrecvBytes(mpi.AnySource, mpi.AnyTag)
 	log.Debugf("    %d: recv: received bytes %s from inbox", node.Source, string(recvbytes))
 	tag := status.GetTag()
 	msg := Msg{Bytes: recvbytes, Remote: status.GetSource(), Tag: tag}
