@@ -35,13 +35,6 @@ func main() {
 			// fmt.Println("node 0 receiving 1")
 			<-node.Inbox
 			// fmt.Println("node 0 received 1")
-			// fmt.Println("node 0 sending 2")
-			node.Send(&msg)
-			// fmt.Println("node 0 sent 2")
-			// fmt.Println("node 0 receiving 2")
-			<-node.Inbox
-			// fmt.Println("node 0 received 2")
-
 		} else {
 			// fmt.Println("node 1 receiving 1")
 			rmsg := <-node.Inbox
@@ -50,12 +43,6 @@ func main() {
 			// fmt.Println("node 1 sending 1")
 			node.Send(rmsg)
 			// fmt.Println("node 1 sent 1")
-			// fmt.Println("node 1 receiving 2")
-			<-node.Inbox
-			// fmt.Println("node 1 received 2")
-			// fmt.Println("node 1 sending 2")
-			node.Send(rmsg)
-			// fmt.Println("node 1 sent 2")
 		}
 	}
 	t1 := mpi.WorldTime()
